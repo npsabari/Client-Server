@@ -1,0 +1,13 @@
+*.o
+*.swp
+*.swo
+*.pyc
+*~
+.project
+obj/
+doc/
+bin/
+.settings/
+.classpath
+*.so
+
