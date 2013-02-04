@@ -6,7 +6,7 @@
 
 * Creation Date : 29-01-2013
 
-* Last Modified : Wednesday 30 January 2013 03:37:38 PM IST
+* Last Modified : Monday 04 February 2013 10:56:37 PM IST
 
 * Created By : npsabari
 
@@ -50,8 +50,14 @@ int main(int argc, char *argv[]){
     int addr_len, bytes_read;           
     char rev_data[MAXN];
     char* send_data;
+
+    struct timespec sleep_time1; 
+    sleep_time1.tv_sec = RELAX_TIME;
+    sleep_time1.tv_nsec = 0;
+
     Sock_in client_addr, server_addr;
-    
+
+ 
     if(argc < 2){
         printf("Port Number Missing\n");
         exit(0);
@@ -93,7 +99,12 @@ int main(int argc, char *argv[]){
         
         int roll = atoi(rev_data);
         Node* ans = search(bst->root, roll);
-        ans = (ans == NULL ? new_node(-1, "Default") : ans);
+        //ans = (ans == NULL ? new_node(-1, "Default") : ans);
+        if(ans == NULL){
+            fprintf(stderr,"\nKey not found and data not sent\n");
+            continue;
+        }
+        nanosleep(sleep_time1);
         if( sendto(sock, ans->name, strlen(ans->name), 0, (Sock_addr *)&client_addr, sizeof(Sock_addr) ) < 0){
             printf("Data not sent from server\n");
             exit(0);

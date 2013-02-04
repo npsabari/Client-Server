@@ -6,13 +6,14 @@
 
 * Creation Date : 29-01-2013
 
-* Last Modified : Wednesday 30 January 2013 02:29:40 AM IST
+* Last Modified : Monday 04 February 2013 11:01:27 PM IST
 
 * Created By : npsabari
 
 _._._._._._._._._._._._._._._._._._._._._.*/
 
 #include <sys/types.h>
+#include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -24,14 +25,16 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #include <stdlib.h>
 #include "Udp.h"
 
-typedef struct sockaddr Sock_addr;
-
 int main(int argc, char *argv[]){
     int sock, bytes_rev;
     Sock_in server_addr;
     Host_ent *host;
     char send_data[MAXN], rev_data[MAXN];
-    
+    fd_set readfd;
+    struct timeval tv;
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+
     if(argc < 2){
         printf("Enter Port Number");
         exit(0);
@@ -57,6 +60,15 @@ int main(int argc, char *argv[]){
             break;
     
         sendto(sock, send_data, strlen(send_data), 0, (Sock_addr *)&server_addr, sizeof(Sock_addr));
+
+        FD_ZERO(&readfd);
+        FD_SET(sock, &readfd);
+        select(sock+1, &readfd, NULL, NULL, &tv);
+
+        if(!(FD_ISSET(sock, &readfd))){
+            printf("Server Timed out either due to Key missing or error in connection\n");
+            continue;
+        }
 
         bytes_rev = recv(sock, rev_data, MAXN, 0);
         rev_data[bytes_rev] = '\0';
