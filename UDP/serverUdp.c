@@ -6,7 +6,7 @@
 
 * Creation Date : 29-01-2013
 
-* Last Modified : Monday 04 February 2013 10:56:37 PM IST
+* Last Modified : Wednesday 06 February 2013 03:35:37 PM IST
 
 * Created By : npsabari
 
@@ -40,7 +40,6 @@ void Construct_BSTree(){
         fscanf(fp, "%d %s", &roll, name);
         bst->root = insert(bst->root, roll, name);
     }
-    //print_bst(bst->root);
     fclose(fp);
 }
 
@@ -50,14 +49,11 @@ int main(int argc, char *argv[]){
     int addr_len, bytes_read;           
     char rev_data[MAXN];
     char* send_data;
-
-    struct timespec sleep_time1; 
-    sleep_time1.tv_sec = RELAX_TIME;
-    sleep_time1.tv_nsec = 0;
-
     Sock_in client_addr, server_addr;
+    struct timeval tv;
+    tv.tv_sec = TIME_OUT;
+    tv.tv_usec = 0;
 
- 
     if(argc < 2){
         printf("Port Number Missing\n");
         exit(0);
@@ -71,6 +67,8 @@ int main(int argc, char *argv[]){
     }
     
     /*Initializing Server for Socket that receives data from Client*/
+    setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(struct timeval));
+
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(atoi(argv[1]));
     server_addr.sin_addr.s_addr = INADDR_ANY;
@@ -99,16 +97,14 @@ int main(int argc, char *argv[]){
         
         int roll = atoi(rev_data);
         Node* ans = search(bst->root, roll);
-        //ans = (ans == NULL ? new_node(-1, "Default") : ans);
         if(ans == NULL){
-            fprintf(stderr,"\nKey not found and data not sent\n");
+            printf("\nKey not found and data not sent \n");
+            //ans = new_node(-1, "key not found");
             continue;
         }
-        nanosleep(sleep_time1);
-        if( sendto(sock, ans->name, strlen(ans->name), 0, (Sock_addr *)&client_addr, sizeof(Sock_addr) ) < 0){
+
+        if( sendto(sock, ans->name, strlen(ans->name), 0, (Sock_addr *)&client_addr, sizeof(Sock_addr) ) < 0)
             printf("Data not sent from server\n");
-            exit(0);
-        }
     }
     close(sock);
     return 0;

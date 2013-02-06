@@ -2,8 +2,7 @@
 #define UDP_H
 
 #define MAXN (1<<10)
-#define RELAX_TIME 3
-#define MAX_TRY 5
+#define TIME_OUT 2
 
 typedef struct sockaddr_in Sock_in;
 typedef struct in_addr In_addr;

@@ -6,7 +6,7 @@
 
 * Creation Date : 29-01-2013
 
-* Last Modified : Monday 04 February 2013 11:01:27 PM IST
+* Last Modified : Wednesday 06 February 2013 03:35:23 PM IST
 
 * Created By : npsabari
 
@@ -30,9 +30,8 @@ int main(int argc, char *argv[]){
     Sock_in server_addr;
     Host_ent *host;
     char send_data[MAXN], rev_data[MAXN];
-    fd_set readfd;
     struct timeval tv;
-    tv.tv_sec = 5;
+    tv.tv_sec = TIME_OUT;
     tv.tv_usec = 0;
 
     if(argc < 2){
@@ -47,6 +46,7 @@ int main(int argc, char *argv[]){
         perror("Socket");
         exit(1);
     }
+    setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));
 
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(atoi(argv[1]));
@@ -58,21 +58,16 @@ int main(int argc, char *argv[]){
         scanf("%s", send_data);
         if( strcmp(send_data, "q") == 0 || strcmp(send_data, "Q") == 0 )
             break;
-    
         sendto(sock, send_data, strlen(send_data), 0, (Sock_addr *)&server_addr, sizeof(Sock_addr));
 
-        FD_ZERO(&readfd);
-        FD_SET(sock, &readfd);
-        select(sock+1, &readfd, NULL, NULL, &tv);
+        bytes_rev = recvfrom(sock, rev_data, MAXN, 0, NULL, NULL);
 
-        if(!(FD_ISSET(sock, &readfd))){
-            printf("Server Timed out either due to Key missing or error in connection\n");
-            continue;
+        if(bytes_rev < 0)
+            printf("Nothing received: Key not found or server timed out\n");
+        else{
+            rev_data[bytes_rev] = '\0';
+            printf("The Name is %s\n", rev_data);
         }
-
-        bytes_rev = recv(sock, rev_data, MAXN, 0);
-        rev_data[bytes_rev] = '\0';
-        printf("The Name is %s\n", rev_data);
         fflush(stdout);
     }
     close(sock);
