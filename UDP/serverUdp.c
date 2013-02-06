@@ -6,7 +6,7 @@
 
 * Creation Date : 29-01-2013
 
-* Last Modified : Wednesday 06 February 2013 08:45:02 PM IST
+* Last Modified : Thursday 07 February 2013 12:07:10 AM IST
 
 * Created By : npsabari
 
@@ -23,13 +23,13 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #include <errno.h>
 #include <netdb.h>
 #include "../Def.h"
-#include "../BSTree.h"
+#include "BSTree/BSTree.h"
 
 BSTree* bst;
 
 void Construct_BSTree(){
     FILE* fp;
-    fp = fopen("../bstinput.txt", "r");
+    fp = fopen("../files/bstinput.txt", "r");
     int size = 0;
     int i, roll;
     char name[SIZE];

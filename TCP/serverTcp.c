@@ -6,7 +6,7 @@
 
  * Creation Date : 06-02-2013
 
- * Last Modified : Wednesday 06 February 2013 11:18:04 PM IST
+ * Last Modified : Wednesday 06 February 2013 11:53:47 PM IST
 
  * Created By : npsabari
 
@@ -76,7 +76,6 @@ int main (int argc, char *argv[]){
             fclose(fp);
         }
         shutdown(connected, SHUT_RDWR);
-        sleep(1);
     }
     close (sock);
     return 0;
