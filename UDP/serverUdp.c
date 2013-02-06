@@ -6,7 +6,7 @@
 
 * Creation Date : 29-01-2013
 
-* Last Modified : Wednesday 06 February 2013 03:35:37 PM IST
+* Last Modified : Wednesday 06 February 2013 08:45:02 PM IST
 
 * Created By : npsabari
 
@@ -22,14 +22,14 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #include <unistd.h>
 #include <errno.h>
 #include <netdb.h>
-#include "Udp.h"
+#include "../Def.h"
 #include "../BSTree.h"
 
 BSTree* bst;
 
 void Construct_BSTree(){
     FILE* fp;
-    fp = fopen("/home/sabari/Documents/Networks/Client-Server/bstinput.txt", "r");
+    fp = fopen("../bstinput.txt", "r");
     int size = 0;
     int i, roll;
     char name[SIZE];
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]){
     
     Construct_BSTree();
 
-    while(1){
+    while(true){
         bytes_read = recvfrom(sock, rev_data, MAXN, 0, (Sock_addr *)&client_addr, &addr_len);
         rev_data[bytes_read] = '\0';
 

@@ -6,7 +6,7 @@
 
 * Creation Date : 29-01-2013
 
-* Last Modified : Wednesday 06 February 2013 03:35:23 PM IST
+* Last Modified : Wednesday 06 February 2013 07:46:54 PM IST
 
 * Created By : npsabari
 
@@ -23,7 +23,7 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-#include "Udp.h"
+#include "../Def.h"
 
 int main(int argc, char *argv[]){
     int sock, bytes_rev;
@@ -53,21 +53,28 @@ int main(int argc, char *argv[]){
     server_addr.sin_addr = *((In_addr *)host->h_addr);
     bzero(&(server_addr.sin_zero), 8);
 
-    while(1){
+    while(true){
         printf("Enter a Roll Number (q or Q to quit) : ");
         scanf("%s", send_data);
         if( strcmp(send_data, "q") == 0 || strcmp(send_data, "Q") == 0 )
             break;
-        sendto(sock, send_data, strlen(send_data), 0, (Sock_addr *)&server_addr, sizeof(Sock_addr));
-
-        bytes_rev = recvfrom(sock, rev_data, MAXN, 0, NULL, NULL);
-
-        if(bytes_rev < 0)
-            printf("Nothing received: Key not found or server timed out\n");
-        else{
-            rev_data[bytes_rev] = '\0';
-            printf("The Name is %s\n", rev_data);
+        int cnt = 0;
+        while(cnt < MAX_TRY){
+            sendto(sock, send_data, strlen(send_data), 0, (Sock_addr *)&server_addr, sizeof(Sock_addr));
+            bytes_rev = recvfrom(sock, rev_data, MAXN, 0, NULL, NULL);
+            if(bytes_rev < 0){
+                printf("Try #%d: Nothing received: Key not found or server timed out\n", ++cnt);
+                continue;
+            }
+            else
+                break;
         }
+        if(cnt == MAX_TRY){
+            printf("No response from server; Ignoring the input\n");
+            continue;
+        }
+        rev_data[bytes_rev] = '\0';
+        printf("The Name is %s\n", rev_data);
         fflush(stdout);
     }
     close(sock);
