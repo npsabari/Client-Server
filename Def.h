@@ -4,7 +4,7 @@
 #define MAXN (1<<10)
 #define TIME_OUT 1
 #define MAX_TRY 5 
-#define SEG_SIZE (1<<2)
+#define SEG_SIZE (1<<3)
 #define true 1
 #define false 0
 

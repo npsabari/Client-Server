@@ -6,7 +6,7 @@
 
  * Creation Date : 30-01-2013
 
- * Last Modified : Wednesday 06 February 2013 11:53:41 PM IST
+ * Last Modified : Thursday 07 February 2013 01:07:06 PM IST
 
  * Created By : npsabari
 
@@ -48,33 +48,31 @@ int main(int argc, char** argv){
     bzero (&(server_addr.sin_zero), 8);
 
 
-    while(true){
-        printf("Enter name of the file to browse ( with path from server root ) ( q or Q to exit): ");
-        scanf("%s", send_data);
-        if(strcmp(send_data, "q") == 0 || strcmp(send_data, "Q") == 0)
-            break;
-        if (connect (sock, (Sock_addr *) &server_addr, sizeof (Sock_addr)) == -1){
-            perror ("Connect");
-            exit (1);
-        }
-        send(sock, send_data, sizeof(send_data), 0);
-
-        int cnt = true;
-        while(true){
-            bytes_received = recv(sock, rev_data, MAXN, 0);
-            if(bytes_received <= 0){
-                printf("End\n");
-                break;
-            }
-            rev_data[bytes_received] = '\0';
-            if(cnt){
-                cnt = false;
-                printf("Received data : \n");
-            }
-            printf ("%s", rev_data);
-        }
+    printf("Enter name of the file to browse ( with path from server root ) ( q or Q to exit): ");
+    scanf("%s", send_data);
+    //if(strcmp(send_data, "q") == 0 || strcmp(send_data, "Q") == 0)
+    //    break;
+    if (connect (sock, (Sock_addr *) &server_addr, sizeof (Sock_addr)) == -1){
+        perror ("Connect");
+        exit (1);
     }
-    close (sock);
+    send(sock, send_data, sizeof(send_data), 0);
+    int cnt = true;
+    int i = 1;
+    while(true){
+        bytes_received = recv(sock, rev_data, MAXN, 0);
+        if(bytes_received <= 0){
+            printf("End\n");
+            break;
+        }
+        rev_data[bytes_received] = '\0';
+        if(cnt){
+            cnt = false;
+            printf("Received data : \n");
+        }
+        printf("Segment #%d: %s\n", i++, rev_data);
+    }
+    close(sock);
     return 0;
 }
 

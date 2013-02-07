@@ -6,7 +6,7 @@
 
  * Creation Date : 06-02-2013
 
- * Last Modified : Wednesday 06 February 2013 11:53:47 PM IST
+ * Last Modified : Thursday 07 February 2013 12:56:20 PM IST
 
  * Created By : npsabari
 
@@ -60,22 +60,22 @@ int main (int argc, char *argv[]){
         connected = accept (sock, (Sock_addr *) &client_addr, &sin_size);
         sin_size = sizeof (Sock_in);
         bytes_read = recv(connected, rev_data, MAXN, 0);
-        printf ("\n Connection from (%s , %d) asked for : %s\n", inet_ntoa (client_addr.sin_addr), ntohs (client_addr.sin_port), rev_data);
+        printf ("\nConnection from (%s , %d) asked for : %s\n", inet_ntoa (client_addr.sin_addr), ntohs (client_addr.sin_port), rev_data);
 
         sprintf(file_name, "../files/%s", rev_data);
         FILE* fp = fopen(file_name, "r");
 
-        if(fp == NULL){
+        if(fp == NULL)
             printf("No such file found; Data not sent\n");
-        }
         else{
-            while(fread(send_data, 1, 1, fp) == 1){
-                printf("%s", send_data);
-                send (connected, send_data, strlen (send_data), 0);
+            while((bytes_read = fread(send_data, 1, SEG_SIZE, fp)) > 0){
+                send_data[bytes_read] = '\0';
+                send (connected, send_data, bytes_read, 0);
+                usleep(1000);       //Sleeping while client reads the data
             }
             fclose(fp);
         }
-        shutdown(connected, SHUT_RDWR);
+        close(connected);
     }
     close (sock);
     return 0;
