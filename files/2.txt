@@ -1,0 +1,4 @@
+This is a sample file.
+The next line is false.
+The above line is true.
+If second line is true then this line is not last line.
